@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../models/task.dart';
 import '../providers/task_provider.dart';
+import '../services/update_service.dart';
+import '../widgets/update_dialog.dart';
 import 'add_edit_task_page.dart';
 
 class TaskListPage extends StatefulWidget {
@@ -28,6 +30,60 @@ class _TaskListPageState extends State<TaskListPage>
     super.dispose();
   }
 
+  Future<void> _checkForUpdate() async {
+    try {
+      // 显示加载指示器
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+
+      final updateInfo = await UpdateService.checkForUpdate();
+      
+      // 关闭加载指示器
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+
+      if (updateInfo != null && mounted) {
+        final shouldUpdate = await showDialog<bool>(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => UpdateDialog(updateInfo: updateInfo),
+        );
+        
+        if (shouldUpdate == true && updateInfo.downloadUrl != null) {
+          await UpdateService.downloadUpdate(updateInfo.downloadUrl!);
+        }
+      } else if (mounted) {
+        // 没有更新时显示提示
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('当前已是最新版本'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      // 关闭加载指示器
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('检查更新失败: $e'),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,6 +99,11 @@ class _TaskListPageState extends State<TaskListPage>
           ],
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.system_update),
+            tooltip: '检查更新',
+            onPressed: _checkForUpdate,
+          ),
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () async {
