@@ -5,8 +5,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 class UpdateService {
   // GitHub仓库信息
-  static const String _owner = 'your-github-username'; // 替换为你的GitHub用户名
-  static const String _repo = 'flutter_card_plan'; // 替换为你的仓库名
+  static const String _owner = 'ruiruiStudy'; // 替换为你的GitHub用户名
+  static const String _repo = 'flutter-check-in-app'; // 替换为你的仓库名
   
   // 检查更新
   static Future<UpdateInfo?> checkForUpdate() async {
