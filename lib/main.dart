@@ -2,14 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/task_provider.dart';
 import 'pages/main_page.dart';
-import 'services/notification_service.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  
-  // 初始化通知服务
-  await NotificationService.initialize();
-  
+void main() {
   runApp(const MyApp());
 }
 

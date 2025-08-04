@@ -20,7 +20,6 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
   
   DateTime? _startDate;
   DateTime? _endDate;
-  bool _enableNotification = true;
   
   bool _isLoading = false;
 
@@ -33,7 +32,6 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
       _noteController.text = widget.task!.note ?? '';
       _startDate = widget.task!.startDate;
       _endDate = widget.task!.endDate;
-      _enableNotification = widget.task!.enableNotification;
     } else {
       // 新增模式，设置默认开始日期为今天
       _startDate = DateTime.now();
@@ -98,7 +96,6 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
         startDate: _startDate!,
         endDate: _endDate!,
         note: _noteController.text.trim().isEmpty ? null : _noteController.text.trim(),
-        enableNotification: _enableNotification,
         checkInDates: widget.task?.checkInDates ?? [],
         createdAt: widget.task?.createdAt ?? DateTime.now(),
       );
@@ -152,9 +149,12 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
                 hintText: '请输入任务名称',
                 border: OutlineInputBorder(),
               ),
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              enableIMEPersonalizedLearning: true,
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return '请输入任务名称';
+                  return '请输入任务名称抖音打卡14天领10.8元';
                 }
                 return null;
               },
@@ -203,20 +203,10 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
                 hintText: '请输入备注信息',
                 border: OutlineInputBorder(),
               ),
+              keyboardType: TextInputType.multiline,
+              textInputAction: TextInputAction.newline,
               maxLines: 3,
-            ),
-            const SizedBox(height: 16),
-            
-            // 通知开关
-            SwitchListTile(
-              title: const Text('消息栏提醒'),
-              subtitle: const Text('每日晚上9点发送提醒通知'),
-              value: _enableNotification,
-              onChanged: (value) {
-                setState(() {
-                  _enableNotification = value;
-                });
-              },
+              enableIMEPersonalizedLearning: true,
             ),
             const SizedBox(height: 32),
             

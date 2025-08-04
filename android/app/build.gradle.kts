@@ -8,13 +8,11 @@ plugins {
 android {
     namespace = "com.example.flutter_card_plan"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = "27.0.12077973"
+    ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
-        // 启用核心库反混淆
-        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -39,11 +37,6 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
-}
-
-dependencies {
-    // 添加核心库反混淆依赖
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }
 
 flutter {

@@ -6,7 +6,6 @@ class Task {
   final DateTime startDate;
   final DateTime endDate;
   final String? note;
-  final bool enableNotification;
   final List<DateTime> checkInDates;
   final DateTime createdAt;
 
@@ -16,7 +15,6 @@ class Task {
     required this.startDate,
     required this.endDate,
     this.note,
-    required this.enableNotification,
     List<DateTime>? checkInDates,
     DateTime? createdAt,
   })  : checkInDates = checkInDates ?? [],
@@ -26,10 +24,12 @@ class Task {
   TaskStatus get status {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
+    final startDateOnly = DateTime(startDate.year, startDate.month, startDate.day);
+    final endDateOnly = DateTime(endDate.year, endDate.month, endDate.day);
     
-    if (today.isBefore(startDate)) {
+    if (today.isBefore(startDateOnly)) {
       return TaskStatus.notStarted;
-    } else if (today.isAfter(endDate)) {
+    } else if (today.isAfter(endDateOnly)) {
       return TaskStatus.completed;
     } else {
       return TaskStatus.inProgress;
@@ -94,7 +94,6 @@ class Task {
     DateTime? startDate,
     DateTime? endDate,
     String? note,
-    bool? enableNotification,
     List<DateTime>? checkInDates,
     DateTime? createdAt,
   }) {
@@ -104,7 +103,6 @@ class Task {
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       note: note ?? this.note,
-      enableNotification: enableNotification ?? this.enableNotification,
       checkInDates: checkInDates ?? this.checkInDates,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -118,7 +116,6 @@ class Task {
       'startDate': startDate.toIso8601String(),
       'endDate': endDate.toIso8601String(),
       'note': note,
-      'enableNotification': enableNotification,
       'checkInDates': checkInDates.map((date) => date.toIso8601String()).toList(),
       'createdAt': createdAt.toIso8601String(),
     };
@@ -132,7 +129,6 @@ class Task {
       startDate: DateTime.parse(json['startDate']),
       endDate: DateTime.parse(json['endDate']),
       note: json['note'],
-      enableNotification: json['enableNotification'],
       checkInDates: (json['checkInDates'] as List<dynamic>)
           .map((date) => DateTime.parse(date))
           .toList(),

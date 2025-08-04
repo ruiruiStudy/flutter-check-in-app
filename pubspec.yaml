@@ -13,7 +13,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # Read more about Android versioning at https://developer.android.com/studio/publish/versioning
 # In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
 # Read more about iOS versioning at
-# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+# https://developer.android.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
 version: 1.0.0+1
@@ -38,14 +38,20 @@ dependencies:
   # 本地存储
   shared_preferences: ^2.2.2
   
-  # 通知
-  flutter_local_notifications: ^16.3.2
-  
   # 日期时间处理
   intl: ^0.19.0
   
   # 状态管理
   provider: ^6.1.1
+  
+  # URL启动器，用于跳转到其他应用
+  url_launcher: ^6.2.5
+  
+  # HTTP请求
+  http: ^1.2.0
+  
+  # 包信息
+  package_info_plus: ^8.0.2
 
 dev_dependencies:
   flutter_test:

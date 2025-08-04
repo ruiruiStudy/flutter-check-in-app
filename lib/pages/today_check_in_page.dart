@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/task.dart';
 import '../providers/task_provider.dart';
+import '../services/app_launcher_service.dart';
 
 class TodayCheckInPage extends StatefulWidget {
   const TodayCheckInPage({super.key});
@@ -167,6 +168,7 @@ class _TodayCheckInPageState extends State<TodayCheckInPage> {
   Widget _buildTaskCard(Task task) {
     final isChecked = task.isTodayChecked;
     final isSelected = _selectedTaskIds.contains(task.id);
+    final shouldShowAppButton = AppLauncherService.shouldShowAppButton(task.name);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -247,6 +249,23 @@ class _TodayCheckInPageState extends State<TodayCheckInPage> {
                 ),
               ],
             ),
+            // 应用跳转按钮
+            if (shouldShowAppButton) ...[
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () => _launchApp(task.name),
+                  icon: const Icon(Icons.open_in_new, size: 16),
+                  label: Text(AppLauncherService.getButtonText(task.name)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
         trailing: isChecked
@@ -257,6 +276,39 @@ class _TodayCheckInPageState extends State<TodayCheckInPage> {
               ),
       ),
     );
+  }
+
+  Future<void> _launchApp(String taskName) async {
+    try {
+      print('开始尝试打开应用: $taskName');
+      final success = await AppLauncherService.launchApp(taskName);
+      if (success) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('正在打开应用...')),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('无法打开应用，请检查是否已安装 $taskName'),
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      print('应用启动异常: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('打开应用失败: $e'),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
   }
 
   Future<void> _checkInSelected() async {
