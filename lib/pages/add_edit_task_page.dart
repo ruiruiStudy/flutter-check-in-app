@@ -49,8 +49,11 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: isStartDate ? _startDate ?? DateTime.now() : _endDate ?? DateTime.now(),
-      firstDate: DateTime.now(),
+      firstDate: isStartDate
+          ? DateTime(2020) // 允许选择较早的日期作为开始日期
+          : (_startDate ?? DateTime.now()), // 结束日期仍需不早于开始日期
       lastDate: DateTime.now().add(const Duration(days: 365)),
+      locale: const Locale('zh', 'CN'), // 显式指定中文本地化
     );
     
     if (picked != null) {

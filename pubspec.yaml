@@ -53,6 +53,9 @@ dependencies:
   # 包信息
   package_info_plus: ^8.0.2
 
+  # 中文化
+  flutter_localization: ^0.3.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
