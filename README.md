@@ -1,16 +1,21 @@
-# flutter_card_plan
+# flutter打卡APP安卓版
 
-plan todo something
+有个朋友喜欢薅羊毛，但是可以薅羊毛的地方太多了，于是就像让我开发一个东西，制定某一个打卡周期，记录打卡，避免遗漏，比如：
+- 抖音：打开14天得10.8元
+- 快手：打卡30天得20元、打开365天得苹果手机
+- 支付宝：累计打卡超过5元可提现
+- 中国银行：签到3天得5元立减金
 
-## Getting Started
+类似的APP活动太多了，所以开发这款APP，用于管理打开
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# 功能如下
+1. 可创建打卡周期的任务，打卡名称，备注等；
+2. 创建完之后，系统自动根据时间分类，分为：进行中的任务，已完成的任务，未开始的任务；
+3. 今日打卡页面，根据创建的所有的打卡列表进行显示，仅显示当天待打卡的任务；
+4. 今日打卡完成，打卡页面和列表页面同步更新，有数字和进度条显示；
+5. 支持一键打卡；
+6. 支持APP检查更新，以获取最新版本；
+7. 支持删除打卡任务；
+8. 所有数据保存在手机本地，不会上传任何数据；
+9. 无任何广告
+10. 某些应用内置了快捷跳转APP，一键直达：抖音(极速版)、快手(极速版)、支付宝
