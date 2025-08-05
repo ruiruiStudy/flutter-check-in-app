@@ -14,6 +14,8 @@ class TodayCheckInPage extends StatefulWidget {
 class _TodayCheckInPageState extends State<TodayCheckInPage> {
   final Set<String> _selectedTaskIds = <String>{};
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,16 +109,33 @@ class _TodayCheckInPageState extends State<TodayCheckInPage> {
                   ],
                 ),
               ),
-              
+
               // 任务列表
               Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: todayTasks.length,
-                  itemBuilder: (context, index) {
-                    final task = todayTasks[index];
-                    return _buildTaskCard(task);
-                  },
+                child: Stack(
+                  children: [
+                    ListView.builder(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: todayTasks.length,
+                      itemBuilder: (context, index) {
+                        final task = todayTasks[index];
+                        return _buildTaskCard(task);
+                      },
+                    ),
+                    // 添加固定在底部的YouTube按钮
+                    Positioned(
+                      bottom: 16,
+                      right: 16,
+                      child: FloatingActionButton(
+                        // onPressed: _openYouTube,
+                        onPressed: () => _launchApp('YouTube'),
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                        tooltip: '测试打开YouTube',
+                        child: const Icon(Icons.video_library),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

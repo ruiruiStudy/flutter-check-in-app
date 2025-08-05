@@ -76,6 +76,27 @@ class AppLauncherService {
         'alipay://',
       ],
     },
+    // 添加YouTube配置
+    'YouTube': {
+      'packages': [
+        'com.google.android.youtube',
+        'com.google.android.youtube.tv',
+        'com.google.android.youtube.go',
+        'com.google.android.youtube.music',
+      ],
+      'urls': [
+        'youtube://',
+        'vnd.youtube://',
+        'https://www.youtube.com',
+        'https://m.youtube.com',
+        'youtube://www.youtube.com',
+        'youtube://youtube.com',
+        'youtube://m.youtube.com',
+        'youtube://www.youtube.com/',
+        'youtube://youtube.com/',
+        'youtube://m.youtube.com/',
+      ],
+    },
   };
 
   // 检查任务名称是否包含特定关键词
@@ -132,7 +153,10 @@ class AppLauncherService {
           print('canLaunchUrl 结果: $canLaunch');
           
           if (canLaunch) {
-            final success = await launchUrl(Uri.parse(packageUrl));
+            final success = await launchUrl(
+              Uri.parse(packageUrl),
+              mode: LaunchMode.externalApplication,
+            );
             print('launchUrl 结果: $success');
             if (success) {
               print('✅ 成功启动应用包: $package');
@@ -158,7 +182,10 @@ class AppLauncherService {
           print('canLaunchUrl 结果: $canLaunch');
           
           if (canLaunch) {
-            final success = await launchUrl(Uri.parse(url));
+            final success = await launchUrl(
+              Uri.parse(url),
+              mode: LaunchMode.externalApplication,
+            );
             print('launchUrl 结果: $success');
             if (success) {
               print('✅ 成功启动应用URL: $url');
@@ -172,6 +199,28 @@ class AppLauncherService {
         } catch (e) {
           print('❌ URL启动异常: $e');
         }
+      }
+
+      // 最后尝试使用Intent方式启动
+      print('\n--- 尝试Intent启动 ---');
+      try {
+        final intentUrl = 'intent://youtube.com#Intent;package=com.google.android.youtube;end';
+        final canLaunch = await canLaunchUrl(Uri.parse(intentUrl));
+        print('Intent canLaunchUrl 结果: $canLaunch');
+        
+        if (canLaunch) {
+          final success = await launchUrl(
+            Uri.parse(intentUrl),
+            mode: LaunchMode.externalApplication,
+          );
+          print('Intent launchUrl 结果: $success');
+          if (success) {
+            print('✅ 成功使用Intent启动YouTube');
+            return true;
+          }
+        }
+      } catch (e) {
+        print('❌ Intent启动异常: $e');
       }
 
       print('\n❌ 所有启动方式都失败了');
