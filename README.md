@@ -19,3 +19,6 @@
 8. 所有数据保存在手机本地，不会上传任何数据；
 9. 无任何广告
 10. 某些应用内置了快捷跳转APP，一键直达：抖音(极速版)、快手(极速版)、支付宝
+
+# 下载链接
+[https://github.com/ruiruiStudy/flutter-check-in-app/releases](https://github.com/ruiruiStudy/flutter-check-in-app/releases)
