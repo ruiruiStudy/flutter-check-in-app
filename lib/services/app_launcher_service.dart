@@ -48,22 +48,80 @@ class AppLauncherService {
       'packages': [
         'com.smile.gifmaker',
         'com.smile.gifmaker.main',
+        'com.kuaishou.nebula',
+        'com.kuaishou.nebula.main',
+        'com.kuaishou.nebula.lite',
+        'com.kuaishou.nebula.main.lite',
+        'com.kuaishou.nebula.pro',
+        'com.kuaishou.nebula.main.pro',
+        'com.kuaishou.nebula.work',
+        'com.kuaishou.nebula.main.work',
+        'com.kuaishou.nebula.work.lite',
+        'com.kuaishou.nebula.main.work.lite',
+        'com.kuaishou.nebula.work.pro',
+        'com.kuaishou.nebula.main.work.pro',
       ],
       'urls': [
+        'kuaishou://',
+        'kuaishou://user/profile',
+        'kuaishou://main',
+        'kuaishou://home',
+        'kuaishou://user',
+        'kuaishou://profile',
+        'kuaishou://user/profile/',
+        'kuaishou://main/',
+        'kuaishou://home/',
+        'gifmaker://',
         'gifmaker://user/profile',
         'gifmaker://main',
-        'kuaishou://',
+        'gifmaker://home',
+        'gifmaker://user',
+        'gifmaker://profile',
+        'gifmaker://user/profile/',
+        'gifmaker://main/',
+        'gifmaker://home/',
+        'gifmaker://user/',
+        'gifmaker://profile/',
+        'vnd.kuaishou://',
+        'vnd.gifmaker://',
       ],
     },
     '快手极速版': {
       'packages': [
         'com.smile.gifmaker.lite',
         'com.smile.gifmaker.main.lite',
+        'com.kuaishou.nebula.lite',
+        'com.kuaishou.nebula.main.lite',
+        'com.kuaishou.nebula.lite.main',
+        'com.kuaishou.nebula.lite.global',
+        'com.kuaishou.nebula.lite.pro',
+        'com.kuaishou.nebula.lite.work',
+        'com.kuaishou.nebula.lite.work.lite',
+        'com.kuaishou.nebula.lite.work.pro',
       ],
       'urls': [
+        'kuaishou://',
+        'kuaishou://user/profile',
+        'kuaishou://main',
+        'kuaishou://home',
+        'kuaishou://user',
+        'kuaishou://profile',
+        'kuaishou://user/profile/',
+        'kuaishou://main/',
+        'kuaishou://home/',
+        'gifmaker://',
         'gifmaker://user/profile',
         'gifmaker://main',
-        'kuaishou://',
+        'gifmaker://home',
+        'gifmaker://user',
+        'gifmaker://profile',
+        'gifmaker://user/profile/',
+        'gifmaker://main/',
+        'gifmaker://home/',
+        'gifmaker://user/',
+        'gifmaker://profile/',
+        'vnd.kuaishou://',
+        'vnd.gifmaker://',
       ],
     },
     '支付宝': {
@@ -74,27 +132,6 @@ class AppLauncherService {
       'urls': [
         'alipay://platformapi/startapp',
         'alipay://',
-      ],
-    },
-    // 添加YouTube配置
-    'YouTube': {
-      'packages': [
-        'com.google.android.youtube',
-        'com.google.android.youtube.tv',
-        'com.google.android.youtube.go',
-        'com.google.android.youtube.music',
-      ],
-      'urls': [
-        'youtube://',
-        'vnd.youtube://',
-        'https://www.youtube.com',
-        'https://m.youtube.com',
-        'youtube://www.youtube.com',
-        'youtube://youtube.com',
-        'youtube://m.youtube.com',
-        'youtube://www.youtube.com/',
-        'youtube://youtube.com/',
-        'youtube://m.youtube.com/',
       ],
     },
   };
@@ -199,28 +236,6 @@ class AppLauncherService {
         } catch (e) {
           print('❌ URL启动异常: $e');
         }
-      }
-
-      // 最后尝试使用Intent方式启动
-      print('\n--- 尝试Intent启动 ---');
-      try {
-        final intentUrl = 'intent://youtube.com#Intent;package=com.google.android.youtube;end';
-        final canLaunch = await canLaunchUrl(Uri.parse(intentUrl));
-        print('Intent canLaunchUrl 结果: $canLaunch');
-        
-        if (canLaunch) {
-          final success = await launchUrl(
-            Uri.parse(intentUrl),
-            mode: LaunchMode.externalApplication,
-          );
-          print('Intent launchUrl 结果: $success');
-          if (success) {
-            print('✅ 成功使用Intent启动YouTube');
-            return true;
-          }
-        }
-      } catch (e) {
-        print('❌ Intent启动异常: $e');
       }
 
       print('\n❌ 所有启动方式都失败了');

@@ -13,8 +13,14 @@ class TodayCheckInPage extends StatefulWidget {
 
 class _TodayCheckInPageState extends State<TodayCheckInPage> {
   final Set<String> _selectedTaskIds = <String>{};
+  final Set<String> _confirmedTasks = <String>{}; // 记录已确认的任务
 
-
+  @override
+  void initState() {
+    super.initState();
+    // 每天重置确认状态
+    _confirmedTasks.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +29,6 @@ class _TodayCheckInPageState extends State<TodayCheckInPage> {
         title: const Text('今日打卡'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
-          TextButton(
-            onPressed: _selectedTaskIds.isEmpty ? null : _checkInSelected,
-            child: const Text('打卡'),
-          ),
           TextButton(
             onPressed: _checkInAll,
             child: const Text('一键打卡'),
@@ -76,7 +78,7 @@ class _TodayCheckInPageState extends State<TodayCheckInPage> {
             children: [
               // 统计信息
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 color: Theme.of(context).colorScheme.surfaceVariant,
                 child: Row(
                   children: [
@@ -88,7 +90,7 @@ class _TodayCheckInPageState extends State<TodayCheckInPage> {
                         Colors.blue,
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: _buildStatCard(
                         '已完成',
@@ -97,7 +99,7 @@ class _TodayCheckInPageState extends State<TodayCheckInPage> {
                         Colors.green,
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 12),
                     Expanded(
                       child: _buildStatCard(
                         '待完成',
@@ -112,30 +114,13 @@ class _TodayCheckInPageState extends State<TodayCheckInPage> {
 
               // 任务列表
               Expanded(
-                child: Stack(
-                  children: [
-                    ListView.builder(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: todayTasks.length,
-                      itemBuilder: (context, index) {
-                        final task = todayTasks[index];
-                        return _buildTaskCard(task);
-                      },
-                    ),
-                    // 添加固定在底部的YouTube按钮
-                    Positioned(
-                      bottom: 16,
-                      right: 16,
-                      child: FloatingActionButton(
-                        // onPressed: _openYouTube,
-                        onPressed: () => _launchApp('YouTube'),
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white,
-                        tooltip: '测试打开YouTube',
-                        child: const Icon(Icons.video_library),
-                      ),
-                    ),
-                  ],
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: todayTasks.length,
+                  itemBuilder: (context, index) {
+                    final task = todayTasks[index];
+                    return _buildTaskCard(task);
+                  },
                 ),
               ),
             ],
@@ -147,10 +132,10 @@ class _TodayCheckInPageState extends State<TodayCheckInPage> {
 
   Widget _buildStatCard(String title, String value, IconData icon, Color color) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(6),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.1),
@@ -160,24 +145,29 @@ class _TodayCheckInPageState extends State<TodayCheckInPage> {
           ),
         ],
       ),
-      child: Column(
+      child: Row(
         children: [
-          Icon(icon, color: color, size: 24),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[600],
-            ),
+          Icon(icon, color: color, size: 16),
+          const SizedBox(width: 4),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: color,
+                ),
+              ),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 10,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -186,59 +176,50 @@ class _TodayCheckInPageState extends State<TodayCheckInPage> {
 
   Widget _buildTaskCard(Task task) {
     final isChecked = task.isTodayChecked;
-    final isSelected = _selectedTaskIds.contains(task.id);
     final shouldShowAppButton = AppLauncherService.shouldShowAppButton(task.name);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(16),
-        leading: Checkbox(
-          value: isSelected,
-          onChanged: (value) {
-            setState(() {
-              if (value == true) {
-                _selectedTaskIds.add(task.id);
-              } else {
-                _selectedTaskIds.remove(task.id);
-              }
-            });
-          },
-        ),
-        title: Row(
-          children: [
-            Expanded(
-              child: Text(
-                task.name,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  decoration: isChecked ? TextDecoration.lineThrough : null,
-                  color: isChecked ? Colors.grey : null,
-                ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: isChecked ? Colors.green : Colors.orange,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                isChecked ? '已完成' : '待完成',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ),
-        subtitle: Column(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 8),
+            // 标题行
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    task.name,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      decoration: isChecked ? TextDecoration.lineThrough : null,
+                      color: isChecked ? Colors.grey : null,
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: isChecked ? Colors.green : Colors.orange,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    isChecked ? '已完成' : '待完成',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            
+            const SizedBox(height: 12),
+            
+            // 进度信息
             Text(
               '进度: ${task.checkedDays}/${task.totalDays}',
               style: TextStyle(
@@ -246,7 +227,10 @@ class _TodayCheckInPageState extends State<TodayCheckInPage> {
                 fontSize: 14,
               ),
             ),
+            
             const SizedBox(height: 8),
+            
+            // 进度条
             Row(
               children: [
                 Expanded(
@@ -268,31 +252,48 @@ class _TodayCheckInPageState extends State<TodayCheckInPage> {
                 ),
               ],
             ),
-            // 应用跳转按钮
-            if (shouldShowAppButton) ...[
-              const SizedBox(height: 12),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () => _launchApp(task.name),
-                  icon: const Icon(Icons.open_in_new, size: 16),
-                  label: Text(AppLauncherService.getButtonText(task.name)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+            
+            const SizedBox(height: 12),
+            
+            // 按钮行
+            Row(
+              children: [
+                // 打卡按钮（仅未完成时显示）
+                if (!isChecked) ...[
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _showCheckInDialog(task),
+                      icon: const Icon(Icons.check_circle_outline, size: 16, color: Colors.white),
+                      label: const Text('打卡'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ],
+                  const SizedBox(width: 8),
+                ],
+                
+                // 应用启动按钮
+                if (shouldShowAppButton) ...[
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _launchApp(task.name),
+                      icon: const Icon(Icons.open_in_new, size: 16, color: Colors.white),
+                      label: Text(AppLauncherService.getButtonText(task.name)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
           ],
         ),
-        trailing: isChecked
-            ? const Icon(Icons.check_circle, color: Colors.green)
-            : IconButton(
-                icon: const Icon(Icons.check_circle_outline),
-                onPressed: () => _checkInSingleTask(task.id),
-              ),
       ),
     );
   }
@@ -330,29 +331,67 @@ class _TodayCheckInPageState extends State<TodayCheckInPage> {
     }
   }
 
-  Future<void> _checkInSelected() async {
-    if (_selectedTaskIds.isEmpty) return;
-
-    try {
-      await Provider.of<TaskProvider>(context, listen: false)
-          .batchCheckIn(_selectedTaskIds.toList());
-      
-      setState(() {
-        _selectedTaskIds.clear();
-      });
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('打卡成功！')),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('打卡失败: $e')),
-        );
-      }
+  // 显示二次确认对话框
+  Future<void> _showCheckInDialog(Task task) async {
+    // 如果用户已经确认过，直接打卡
+    if (_confirmedTasks.contains(task.id)) {
+      _checkInSingleTask(task.id, true);
+      return;
     }
+    
+    bool isConfirmed = false;
+    
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('确认打卡'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('确定要打卡任务"${task.name}"吗？'),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: isConfirmed,
+                        onChanged: (value) {
+                          setState(() {
+                            isConfirmed = value ?? false;
+                          });
+                        },
+                      ),
+                      const Expanded(
+                        child: Text(
+                          '今日不再确认',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('取消'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _checkInSingleTask(task.id, isConfirmed);
+                  },
+                  child: const Text('确认'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 
   Future<void> _checkInAll() async {
@@ -378,14 +417,17 @@ class _TodayCheckInPageState extends State<TodayCheckInPage> {
     }
   }
 
-  Future<void> _checkInSingleTask(String taskId) async {
+  Future<void> _checkInSingleTask(String taskId, bool isConfirmed) async {
     try {
       await Provider.of<TaskProvider>(context, listen: false)
           .batchCheckIn([taskId]);
       
-      setState(() {
-        _selectedTaskIds.remove(taskId);
-      });
+      // 如果用户勾选了"今日不再确认"，则添加到已确认列表
+      if (isConfirmed) {
+        setState(() {
+          _confirmedTasks.add(taskId);
+        });
+      }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

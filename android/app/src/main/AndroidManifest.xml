@@ -44,10 +44,5 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
-        <!-- 添加对YouTube应用的查询权限 -->
-        <package android:name="com.google.android.youtube" />
-        <package android:name="com.google.android.youtube.tv" />
-        <package android:name="com.google.android.youtube.go" />
-        <package android:name="com.google.android.youtube.music" />
     </queries>
 </manifest>
